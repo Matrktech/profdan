@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login / Signup - Professor Dan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0fdfa; /* Consistent light teal background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .form-container {
+            max-width: 420px;
+            width: 100%;
+            animation: slideIn 0.7s ease-out forwards;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .form-toggle button.active {
+            color: #0d9488; /* Tailwind teal-600 */
+            border-color: #0d9488;
+        }
+        input:focus {
+            border-color: #0d9488;
+            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.2);
+            outline: none;
+        }
+        form { display: none; }
+        form.active { display: block; animation: fadeInForm 0.5s ease; }
+        @keyframes fadeInForm { from { opacity: 0; } to { opacity: 1; } }
+        .submit-button {
+            transition: all 0.3s ease;
+        }
+        .submit-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(0, 0, 0, 0.15);
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container p-4">
+        <div class="bg-white rounded-2xl shadow-xl shadow-slate-200 p-8">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                 <svg class="w-16 h-16 text-teal-600 mx-auto" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.333a2.493 2.493 0 01-2.486-2.222l-.16-1.042a5.833 5.833 0 01-1.488-1.924l-.794-.794a2.5 2.5 0 113.536-3.536l.794.794a5.834 5.834 0 011.924 1.488l1.042.16A2.493 2.493 0 0112 18.333z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.333V21m0-15V3m4.243 4.243l2.121-2.121M5.636 5.636L3.515 3.515m16.97 12.728l-2.121-2.121M3.515 16.97l2.121-2.121M21 12h-2.667M5.667 12H3" />
+                    <path fill="#14b8a6" d="M12 14.167a2.167 2.167 0 100-4.334 2.167 2.167 0 000 4.334z" />
+                 </svg>
+                <h1 id="form-title" class="text-3xl font-bold text-slate-800 mt-2">Portal</h1>
+                <p class="text-slate-500 mt-1">Access your Professor Dan account</p>
+            </div>
+
+            <!-- Error Message Box -->
+            <div id="firebase-error" class="hidden p-3 mb-4 bg-red-50 text-red-700 border border-red-200 rounded-lg text-sm flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+                <span id="firebase-error-text"></span>
+            </div>
+
+
+            <!-- Form Toggle -->
+            <div class="form-toggle flex border-b border-slate-200 mb-6">
+                <button id="login-tab" class="flex-1 py-3 font-semibold text-slate-500 border-b-2 border-transparent transition" onclick="showForm('login')">Login</button>
+                <button id="signup-tab" class="flex-1 py-3 font-semibold text-slate-500 border-b-2 border-transparent transition" onclick="showForm('signup')">Sign Up</button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="login-form" action="ai.html">
+                <div class="space-y-4">
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg></span>
+                        <input class="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-lg" type="email" placeholder="Email Address" required>
+                    </div>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg></span>
+                        <input class="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-lg" type="password" placeholder="Password" required>
+                    </div>
+                </div>
+                <div class="text-right mt-2 mb-6">
+                    <a href="#" class="text-sm font-medium text-teal-600 hover:text-teal-700">Forgot Password?</a>
+                </div>
+                <button type="submit" class="submit-button w-full py-3.5 bg-teal-600 text-white font-bold rounded-lg shadow-md shadow-teal-100">Login</button>
+            </form>
+
+            <!-- Signup Form -->
+            <form id="signup-form" action="ai.html">
+                <div class="space-y-4">
+                     <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" /></svg></span>
+                        <input class="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-lg" type="text" placeholder="Full Name" required>
+                    </div>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg></span>
+                        <input class="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-lg" type="email" placeholder="Email Address" required>
+                    </div>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg></span>
+                        <input class="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-lg" type="password" placeholder="Create Password" required>
+                    </div>
+                </div>
+                <button type="submit" class="submit-button w-full py-3.5 mt-6 bg-emerald-500 text-white font-bold rounded-lg shadow-md shadow-emerald-100">Create Account</button>
+            </form>
+
+            <div class="relative text-center my-6">
+                <span class="absolute top-1/2 left-0 w-full h-px bg-slate-200"></span>
+                <span class="relative bg-white px-3 text-sm text-slate-400">OR</span>
+            </div>
+            <button class="w-full py-3 border border-slate-200 rounded-lg flex items-center justify-center gap-3 hover:bg-slate-50 transition">
+                <img src="https://www.google.com/favicon.ico" alt="Google icon" class="w-5 h-5">
+                <span class="font-medium text-slate-700">Continue with Google</span>
+            </button>
+        </div>
+    </div>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+      import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyAsR0U4hx5kIox41JK9-Cp4WsPCxpKpVXI",
+        authDomain: "matrk-ai-logs.firebaseapp.com",
+        projectId: "matrk-ai-logs",
+        storageBucket: "matrk-ai-logs.firebasestorage.app",
+        messagingSenderId: "348034834579",
+        appId: "1:348034834579:web:cf9bb7e3dc80c40904ad66"
+      };
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+
+      const errBox = document.getElementById('firebase-error');
+      const errText = document.getElementById('firebase-error-text');
+      
+      function showError(msg) {
+        errText.textContent = msg;
+        errBox.classList.remove('hidden');
+      }
+      function clearError() {
+        errBox.classList.add('hidden');
+      }
+
+      document.getElementById('login-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        clearError();
+        const email = e.target.querySelector('input[type="email"]').value;
+        const password = e.target.querySelector('input[type="password"]').value;
+        try {
+          await signInWithEmailAndPassword(auth, email, password);
+          window.location.href = 'ai.html';
+        } catch (error) {
+          showError('Login failed: ' + (error.code || error.message));
+        }
+      });
+
+      document.getElementById('signup-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        clearError();
+        const email = e.target.querySelector('input[type="email"]').value;
+        const password = e.target.querySelector('input[type="password"]').value;
+        try {
+          await createUserWithEmailAndPassword(auth, email, password);
+          window.location.href = 'ai.html';
+        } catch (error) {
+          showError('Sign up failed: ' + (error.code || error.message));
+        }
+      });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const role = urlParams.get('role') || 'User'; 
+            document.getElementById('form-title').textContent = `${role.charAt(0).toUpperCase() + role.slice(1)} Portal`;
+            showForm('login'); 
+        });
+
+        function showForm(formName) {
+            document.getElementById('login-form').classList.remove('active');
+            document.getElementById('signup-form').classList.remove('active');
+            document.getElementById('login-tab').classList.remove('active');
+            document.getElementById('signup-tab').classList.remove('active');
+
+            document.getElementById(`${formName}-form`).classList.add('active');
+            document.getElementById(`${formName}-tab`).classList.add('active');
+            
+            // Clear errors when switching forms
+            const errBox = document.getElementById('firebase-error');
+            if (errBox) errBox.classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
